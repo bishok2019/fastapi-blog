@@ -6,4 +6,31 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.124.2",
+    "passlib[bcrypt]>=1.7.4",
+    "psycopg2-binary>=2.9.11",
+    "sqlalchemy>=2.0.45",
 ]
+
+[tool.ruff]
+
+line-length = 88
+target-version = "py311"
+
+
+[tool.ruff.lint]
+
+# Enable pyflakes (F), pycodestyle (E), isort (I)
+select = ["E", "F", "I"]
+ignore = ["F401", "E501"]  # Ignore unused imports everywhere
+
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+
+
+[tool.black]
+max-line-length = 88 # Or your desired length

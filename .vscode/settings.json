@@ -1,0 +1,57 @@
+{
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    // Ruff integration
+    "ruff.enable": true,
+    // "ruff.lint.run": "onSave",
+    "ruff.format.enable": true,
+    // Use Ruff as formatter for Python
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        // "editor.defaultFormatter": "astral-sh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    // Auto-format when saving
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    // Disable conflicts
+    "python.linting.enabled": false,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length==88"
+    ],
+    "python.formatting.autopep8Args": [
+        "--max-line-length=88"
+    ],
+    "autopep8.args": [
+        "--max-line-length=88"
+    ],
+    "editor.rulers": [
+        85,
+        120
+    ]
+}
+// {
+//   "python.defaultInterpreterPath": ".venv/bin/python",
+//   "python.formatting.provider": "black",
+//   "python.formatting.blackArgs": [
+//     "--line-length",
+//     "119"
+//   ],
+//   "python.sortImports.args": [
+//     "--profile=black"
+//   ],
+//   "editor.formatOnSave": true,
+//   "editor.rulers": [
+//     85,
+//     120
+//   ],
+//   "[python]": {
+//     "editor.codeActionsOnSave": {
+//       "source.organizeImports": "explicit"
+//     }
+//   }
+// }
