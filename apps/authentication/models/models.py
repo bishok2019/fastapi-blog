@@ -1,7 +1,7 @@
+from apps.blog.models.post import Post
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from apps.blog.models.post import Post
 from base.models import BaseModel
 
 
