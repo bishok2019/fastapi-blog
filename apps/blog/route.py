@@ -70,12 +70,13 @@ class PostCreateRouter(CreateRouter[Post, PostCreate]):
 
 
 class PostListRouter(ReadRouter[Post, PostList]):
-    def read_all(self, skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-        items = db.query(self.model).offset(skip).limit(limit).all()
-        data = [self.schema.model_validate(item) for item in items]
-        return StandardResponse(
-            success=True, data=data, message="Posts fetched successfully."
-        )
+    # def read_all(self, db: Session = Depends(get_db)):
+    #     items = db.query(self.model).all()
+    #     data = [self.schema.model_validate(item) for item in items]
+    #     return StandardResponse(
+    #         success=True, data=data, message="Posts fetched successfully."
+    #     )
+    pass
 
 
 class PostRetrieveRouter(RetrieveRouter[Post, PostRetrieve]):
@@ -109,6 +110,12 @@ post_routers = [
         prefix="/create",
         # tags=["posts"],
     ),
+    # ReadRouter(
+    #     Post,
+    #     PostList,
+    #     prefix="/list",
+    #     # tags=["posts"],
+    # ),
 ]
 
 for post_router in post_routers:

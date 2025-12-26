@@ -114,11 +114,19 @@ class ReadRouter(Generic[ModelType, ReadSchemaType]):
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc))
+
+        # Convert meta to dict if needed
+        meta_dict = (
+            result.meta.model_dump()
+            if hasattr(result.meta, "model_dump")
+            else dict(result.meta)
+        )
+        meta_dict["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return StandardResponse(
             success=True,
             data=result.data,
             message="Retrieved successfully",
-            meta=result.meta,
+            meta=meta_dict,
         )
 
 

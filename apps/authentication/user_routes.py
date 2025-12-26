@@ -79,6 +79,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from apps.database import get_db
+from base.pagination import paginate
 from base.route import StandardResponse
 
 from .models.models import User
@@ -136,18 +137,36 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=StandardResponse)
-def get_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+def get_users(page: int = 1, page_size: int = 1, db: Session = Depends(get_db)):
     """Get all users with pagination"""
-    users = db.query(User).offset(skip).limit(limit).all()
-    data = [UserList.model_validate(user) for user in users]
-
+    # users = db.query(User).all()
+    # data = [UserList.model_validate(user) for user in users]
+    result = paginate(
+        query=db.query(User),
+        page=page,
+        page_size=page_size,
+        schema=UserList,
+    )
+    meta_dict = (
+        result.meta.model_dump()
+        if hasattr(result.meta, "model_dump")
+        else dict(result.meta)
+    )
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content=StandardResponse.success_response(
-            data=data,
+            data=result.data,
             message="Users fetched successfully.",
+            meta=meta_dict,
         ).model_dump(),
     )
+    # return JSONResponse(
+    #     status_code=status.HTTP_200_OK,
+    #     content=StandardResponse.success_response(
+    #         data=data,
+    #         message="Users fetched successfully.",
+    #     ).model_dump(),
+    # )
 
 
 @router.get("/{user_id}", response_model=StandardResponse)
