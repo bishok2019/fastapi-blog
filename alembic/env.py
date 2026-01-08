@@ -4,6 +4,7 @@ from decouple import config as cnfg
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
+from apps.api_logs.models import APILog, ErrorLog
 from apps.authentication.models import User
 from apps.blog.models import Post
 from apps.database import Base
