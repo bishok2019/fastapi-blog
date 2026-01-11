@@ -138,13 +138,16 @@ class APILoggingMiddleware(BaseHTTPMiddleware):
         response_status = 500
         response_headers = {}
         response_media_type = "application/json"
+        body = None
 
         try:
-            # Read request body
-            try:
-                body = await request.json()
-            except Exception:
-                body = None
+            # Skip GET requests
+            if request.method.upper() != "GET":
+                # Read request body
+                try:
+                    body = await request.json()
+                except Exception:
+                    body = None
 
             # Get response
             response = await call_next(request)
@@ -166,19 +169,20 @@ class APILoggingMiddleware(BaseHTTPMiddleware):
             response_media_type = response.media_type
 
             # Log API call
-            db: Session = next(get_db())
-            api_log = APILog(
-                url=str(request.url),
-                method=request.method,
-                ip=request.client.host if request.client else None,
-                user_agent=request.headers.get("user-agent"),
-                body=body,
-                header=dict(request.headers),
-                response=response_content,
-                status_code=str(response_status),
-            )
-            db.add(api_log)
-            db.commit()
+            if request.method.upper() != "GET":
+                db: Session = next(get_db())
+                api_log = APILog(
+                    url=str(request.url),
+                    method=request.method,
+                    ip=request.client.host if request.client else None,
+                    user_agent=request.headers.get("user-agent"),
+                    body=body,
+                    header=dict(request.headers),
+                    response=response_content,
+                    status_code=str(response_status),
+                )
+                db.add(api_log)
+                db.commit()
 
         except Exception as exc:
             # Log errors
@@ -194,6 +198,11 @@ class APILoggingMiddleware(BaseHTTPMiddleware):
             )
             db.add(error_log)
             db.commit()
+            # Override response with error
+            # response_body = json.dumps({"detail": str(exc)}).encode()
+            # response_status = 500
+            # response_headers = {"content-type": "application/json"}
+            # response_media_type = "application/json"
 
         # Return the original response content safely
         return Response(
